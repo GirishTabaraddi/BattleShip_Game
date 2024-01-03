@@ -1,0 +1,130 @@
+/*!
+ * @file UML.txt
+ *
+ * \n Created on: 03-Dec-2023
+ * @author Girish Tabaraddi
+ *
+ * Built on: \showdate "%A %d-%m-%Y %H:%M:%S"
+ */
+
+/*
+
+@startuml
+
+class GridPosition
+{
+	- m_row: char
+	- m_column: int
+
+	+ GridPosition(row:char, column: int)
+	+ GridPosition(position std::string)
+	+ isValid():bool const
+	+ getRow(): char const
+	+ getColumn(): int const
+	+ operator std::string(): string const
+	+ operator== (other: GridPosition): bool const
+	+ operator< (other: GridPosition): bool const
+}
+
+class Ship
+{
+	- m_bow: GridPosition
+	- m_stern: GridPosition
+
+	+ Ship(bow: const GridPosition&, stern: const GridPosition&)
+	+ isValid(): bool const
+	+ getBow(): GridPosition const
+	+ getStern(): GridPosition const
+	+ length(): int const
+	+ occupiedArea(): const std::set<GridPosition> const
+	+ blockedArea(): const std::set<GridPosition> const
+}
+
+Ship "1" *--> "2" GridPosition : composition
+
+class OwnGrid
+{
+	- m_rows: int
+	- m_columns: int
+	- m_ships: std::vector<Ship>
+	- m_shotAt: std::set<GridPosition>
+	
+	+ OwnGrid(rows: int, columns: int)
+	+ getRows(): int const
+	+ getColumns(): int const
+	+ placeShip(ship: const Ship&): bool
+	+ getShips(): const vector<Ship> const
+	+ takeBlow(const Shot& shot): Shot::Impact
+    + getShotAt(): const set<GridPosition> const
+}
+
+OwnGrid "0..10" *--> "0..10" Ship : composition
+
+class OpponentGrid
+{
+	- m_rows: int
+	- m_columns: int
+	- m_sunkenShips: std::vector<Ship>
+	- m_shots: std::map<GridPosition, Shot::Impact>
+	
+	+ OpponentGrid(rows: int, columns: int)
+	+ getRows(): int const
+	+ getColumns(): int const
+	+ shotResult(shot: const Shot&, impact: Shot::Impact): void
+	+ getShotsAt(): const map<GridPosition,Shot::Impact>& const
+	+ getSunkenShips(): const std::vector<Ship> const
+	+ placeSunkenShip(sunkenShipGridPos: const std::set<GridPosition>): void
+}
+
+OpponentGrid "0..10" *--> "0..10" Ship : composition
+
+class Board
+{
+	- m_ownGrid: OwnGrid
+	- m_opponentGrid: OpponentGrid
+
+	+ Board(rows: int, columns: int)
+	+ getRows(): int const
+	+ getColumns(): int const
+	+ getOwnGrid(): OwnGrid&
+	+ getOpponentGrid(): OpponentGrid&
+}
+
+Board "1" *--> "1" OwnGrid : composition
+
+Board "1" *--> "1" OpponentGrid : composition
+
+class ConsoleView
+{
+	- m_board: std::shared_ptr<Board>
+
+	+ ConsoleView(board: std::shared_ptr<Board>)
+	+ getBoard() : std::shared_ptr<Board>&
+	+ print() : void
+	+ modifyOwnGrid(row: char, column: int) : char
+	+ modifyOpponentGrid(row: char, column: int) : char
+}
+
+ConsoleView "1" --> "0..1" Board  : Association
+
+class Shot
+{
+	- m_targetPosition : GridPosition
+
+	+ Shot(targetPosition: GridPosition)
+	+ getTargetPosition(): GridPosition const
+	
+	+ enum Impact
+}
+
+Shot "1" *--> "1" GridPosition : composition
+	
+enum Impact
+{
+	NONE
+	HIT
+	SUNKEN
+}
+
+@enduml
+*/
