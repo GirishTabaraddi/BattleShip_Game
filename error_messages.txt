@@ -1,0 +1,25 @@
+1. no matching function for call to 'GridPosition::GridPosition()'
+	Solved this error by initializing the arguments of ship constructor to it's private members.
+	Ship::Ship(const GridPosition &bow, const GridPosition &stern) : m_bow(bow), m_stern(stern)
+	Like this, it is done because the GridPosition has no default constructor.
+
+2. undefined reference to `Ship::occupiedArea() const'
+	It's a linker error
+	It tells that there is no reference to that function in any of the object files generated.
+	That is it is missing definition.
+
+3. 	auto myBoard =  make_unique<Board>(10,10);
+	//auto myBoard = std::unique_ptr<Board>(new Board(10,10));
+	make_unique creates a unique pointer that manages a new object, and hence we don't need to 
+	explicitly write new when declaring a unique pointer.
+
+4. 	OwnGrid& placeMyShips = myConsole.getBoard()->getOwnGrid();
+	placeMyShips.placeShip(Ship{GridPosition("B2"), GridPosition("B4")});
+	
+	this is how to create a board instance and place the ship in own grid
+	
+5.	binding of reference to a value of type drops qualifiers
+	this error I had got when I changed auto& to GridPosition&, but the GridPosition class
+	method which the auto& param was using was a const, so I had to declare it as const GridPosition&
+
+6.
