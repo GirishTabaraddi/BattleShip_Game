@@ -70,6 +70,57 @@ bool OwnGrid::placeShip(const Ship &ship)
 	return false;
 }
 
+/*
+// Mahima's Logic
+bool OwnGrid::placeShip(const Ship &ship)
+{
+	char maxRow = static_cast<char>('A'+getRows()-1)+1;
+
+	if(ship.isValid())
+	{
+		//Edge placement
+		if((ship.getBow().getRow() >= 'A') && (ship.getBow().getRow() < maxRow)
+				&& (ship.getStern().getRow() >= 'A') && (ship.getStern().getRow() < maxRow)
+				&& (ship.getBow().getColumn() >= 1) && (ship.getBow().getColumn() < getColumns()+1)
+				&& (ship.getStern().getColumn() >= 1) && (ship.getStern().getColumn() < getColumns()+1))
+		{
+			std::set<GridPosition> placedBlocked;
+			std::set<GridPosition> currentOccupied;
+
+			currentOccupied = ship.occupiedArea();
+
+			for(const auto& placedShips: getShips())
+			{
+				placedBlocked = placedShips.blockedArea();
+
+				//set to store intersection
+				std::set<GridPosition> intersection;
+
+				//find the intersection
+				std::set_intersection(
+						currentOccupied.begin(), currentOccupied.end(),
+						placedBlocked.begin(), placedBlocked.end(),
+						std::inserter(intersection, intersection.begin()));
+
+				if(!intersection.empty())
+				{
+				    return false;
+				    break;
+				}
+			}
+	        if (m_OwnShips[ship.length()] > 0)
+	        {
+	            // Place the ship, update ship count, and return true
+	            this->m_ships.push_back(ship);
+	            m_OwnShips[ship.length()]--;
+	            return true;
+	        }
+		}
+	}
+
+	return false;
+}
+*/
 Shot::Impact OwnGrid::takeBlow(const Shot &shot)
 {
 	GridPosition shotAtGridPos(shot.getTargetPosition());
