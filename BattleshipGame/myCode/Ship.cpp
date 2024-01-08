@@ -30,7 +30,8 @@ bool Ship::isValid() const
 {
 	int shipLength = length();
 
-	if(shipLength > 1 && shipLength < 6)
+	if((shipLength > 1 && shipLength < 6) &&
+			(getBow().isValid() && getStern().isValid()))
 	{
 		if(getBow().getRow() == getStern().getRow())
 		{
@@ -55,14 +56,29 @@ int Ship::length() const
 {
 	int shipLength = 0;
 
-	if(getBow().getRow() == getStern().getRow() &&
-			getBow().getColumn() < getStern().getColumn())
+	if(getBow().isValid() && getStern().isValid())
 	{
-		shipLength = abs(getStern().getColumn() - getBow().getColumn()) + 1;
+		if(getBow().getRow() == getStern().getRow() &&
+				getBow().getColumn() < getStern().getColumn())
+		{
+			/*!< Row same, Column different. */
+			shipLength = abs(getStern().getColumn() - getBow().getColumn()) + 1;
+		}
+		else if(getBow().getRow() < getStern().getRow() &&
+				getBow().getColumn() == getStern().getColumn())
+		{
+			/*!< Row different, Column same. */
+			shipLength = abs(getStern().getRow() - getBow().getRow()) + 1;
+		}
+		else
+		{
+			/*!< Row and Column Same. */
+			shipLength = 1;
+		}
 	}
-	else if(getBow().getRow() < getStern().getRow())
+	else
 	{
-		shipLength = abs(getStern().getRow() - getBow().getRow()) + 1;
+		shipLength = 0;
 	}
 
 	return shipLength;
@@ -72,22 +88,33 @@ const std::set<GridPosition> Ship::occupiedArea() const
 {
 	std::set<GridPosition> shipOccupiedPositions;
 
-	if(getBow().getRow() == getStern().getRow() &&
-			getBow().getColumn() < getStern().getColumn())
+	if(isValid())
 	{
-		for(int col = getBow().getColumn(); col <= getStern().getColumn(); col++)
+		if(getBow().getRow() == getStern().getRow() &&
+				getBow().getColumn() < getStern().getColumn())
 		{
-			shipOccupiedPositions.insert(GridPosition(getBow().getRow(), col));
+			for(int col = getBow().getColumn(); col <= getStern().getColumn(); col++)
+			{
+				shipOccupiedPositions.insert(GridPosition(getBow().getRow(), col));
+			}
+		}
+		else if(getBow().getRow() < getStern().getRow() &&
+				getBow().getColumn() == getStern().getColumn())
+		{
+			for(char row = getBow().getRow(); row <= getStern().getRow(); row++)
+			{
+				shipOccupiedPositions.insert(GridPosition(row, getBow().getColumn()));
+			}
+		}
+		else
+		{
+			shipOccupiedPositions.insert(GridPosition(getBow().getRow(), getBow().getColumn()));
 		}
 	}
-	else if(getBow().getRow() < getStern().getRow())
+	else
 	{
-		for(char row = getBow().getRow(); row <= getStern().getRow(); row++)
-		{
-			shipOccupiedPositions.insert(GridPosition(row, getBow().getColumn()));
-		}
+		/*!< Invalid Ship Occupied Area*/
 	}
-
 	return shipOccupiedPositions;
 }
 
@@ -97,16 +124,24 @@ const std::set<GridPosition> Ship::blockedArea() const
 
 	set<GridPosition> shipOccupiedArea = occupiedArea();
 
-	for(auto itr = shipOccupiedArea.begin(); itr != shipOccupiedArea.end(); itr++)
+	if(shipOccupiedArea.empty() == false)
 	{
-		for(int rowIndex = itr->getRow() - 1; rowIndex <= itr->getRow() + 1; rowIndex++)
+		for(auto itr = shipOccupiedArea.begin(); itr != shipOccupiedArea.end(); itr++)
 		{
-			for(char colIndex = itr->getColumn() - 1; colIndex <= itr->getColumn() + 1; colIndex++)
+			for(int rowIndex = itr->getRow() - 1; rowIndex <= itr->getRow() + 1; rowIndex++)
 			{
-				blockedGridPositions.insert(GridPosition(rowIndex, colIndex));
+				for(char colIndex = itr->getColumn() - 1; colIndex <= itr->getColumn() + 1; colIndex++)
+				{
+					GridPosition insertPos(rowIndex, colIndex);
+					if(insertPos.isValid())
+						blockedGridPositions.insert(insertPos);
+				}
 			}
 		}
 	}
-
+	else
+	{
+		/*!< Invalid Ship Blocked Area*/
+	}
 	return blockedGridPositions;
 }
