@@ -47,7 +47,8 @@ bool GridPosition::isValid() const
 {
 	return (getRow() >= 'A' && getRow() <= 'Z') && (getColumn() > 0);
 
-//	if((getRow() >= 'A' && getRow() <= 'Z') && (getColumn() > 0))
+//	if((this->m_row >= 'A' && this->m_row <= 'Z')
+//			&& (this->m_column > 0))
 //	{
 //		return true;
 //	}
@@ -69,12 +70,16 @@ int GridPosition::getColumn() const
 
 GridPosition::operator std::string() const
 {
-	return (getRow() + to_string(getColumn()));
+	return (this->m_row + to_string(this->m_column));
 }
 
 bool GridPosition::operator ==(GridPosition other) const
 {
-	return (this->m_row == other.m_row) && (this->m_column == other.m_column);
+	if(isValid())
+		return (this->m_row == other.m_row) &&
+				(this->m_column == other.m_column);
+	else
+		return false;
 //	string origStr = *this;
 //	string otherStr = other;
 //
@@ -86,8 +91,12 @@ bool GridPosition::operator ==(GridPosition other) const
 
 bool GridPosition::operator <(GridPosition other) const
 {
-	return (this->m_row < other.m_row) || ((this->m_row == other.m_row) &&
-			(this->m_column < other.m_column));
+	if(isValid())
+		return (this->m_row < other.m_row) ||
+				((this->m_row == other.m_row) &&
+				(this->m_column < other.m_column));
+	else
+		return false;
 //	if(this->m_row < other.m_row)
 //	{
 //		return true;
